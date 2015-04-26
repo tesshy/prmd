@@ -1,6 +1,6 @@
 <%=
   schemata_template = Prmd::Template::load('schemata.md.erb', options[:template])
-
+  schema['properties'] = schema['items']['properties'] unless schema['items'].nil?
   schema['properties'].map do |resource, property|
     begin
       _, schemata = schema.dereference(property)

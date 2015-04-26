@@ -1,6 +1,5 @@
 <%-
-  return unless schemata.has_key?('links') && !schemata['links'].empty?
-
+  return unless schemata.has_key?('links') && !schemata['links'].empty?  
   Prmd::Template.render('schemata/helper.erb', options[:template], {
     options:         options,
     resource:        resource,
@@ -16,6 +15,18 @@
 <%= schemata['description'] %>
 <%- end -%>
 
+<%- if schemata['items'] && !schemata['items'].empty? -%>
+<%- if schemata['items']['properties'] && !schemata['items']['properties'].empty? %>
+### Attributes
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+<%- extract_attributes(schema, schemata['items']['properties']).each do |(key, type, description, example)| %>
+| **<%= key %>** | *<%= type %>* | <%= description %> | <%= example %> |
+<%- end %>
+<%- end %>
+
+
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
 ### Attributes
 
@@ -24,8 +35,10 @@
 <%- extract_attributes(schema, schemata['properties']).each do |(key, type, description, example)| %>
 | **<%= key %>** | *<%= type %>* | <%= description %> | <%= example %> |
 <%- end %>
+<%- end %>
 
 <%- end %>
+
 <%- schemata['links'].each do |link, datum| %>
 <%=
   Prmd::Template.render('schemata/link.md.erb', options[:template], {
